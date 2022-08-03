@@ -24,9 +24,7 @@ SamplerQuery {
 		keyNums.asArray.do{|keyNum, keynumIndex|
 			var sampleList = [];
 			var keySign = keyNum.sign;
-			var samplePrep = SamplerPrepare.new;
 
-			samplePrep.bufServer = sampler.bufServer;
 			keyNum = keyNum.abs;
 
 			//find keyNums in the keyRanges of each sample sections, send the sample section information
@@ -35,6 +33,8 @@ SamplerQuery {
 				thisKeyRange.do{|thisSection, idx| //idx is the section indes within the sample
 					if((keyNum <= thisSection[1]) && (keyNum >= thisSection[0]))
 					{
+						var samplePrep = SamplerPrepare.new;
+						samplePrep.bufServer = sampler.bufServer;
 						samplePrep.sample = thisSample;
 						samplePrep.samplerName = sampler.name;
 						samplePrep.duration = args.dur;
@@ -51,6 +51,7 @@ SamplerQuery {
 			if(sampleList.isEmpty)
 			{
 				var sortIndexes = Dictionary.new;
+				var samplePrep = SamplerPrepare.new;
 
 				sampler.samples.do{|thisSample, index|
 					thisSample.keynum.do{|thisKeynum, idx|
@@ -88,7 +89,7 @@ SamplerQuery {
 				if(sampleList.size < texture) {
 					var prepList = sampleList.wrapExtend(texture - sampleList.size);
 					prepList.do{|thisSamplePrep, index|
-						thisSamplePrep.setRate(2**((keyNum + rand2(0.3) - samplePrep.sample.keynum[samplePrep.section]) / 12) * (keySign + 1 - keySign.abs));
+						thisSamplePrep.setRate(2**((keyNum + rand2(0.3) - thisSamplePrep.sample.keynum[thisSamplePrep.section]) / 12) * (keySign + 1 - keySign.abs));
 						sampleList = sampleList.add(thisSamplePrep);
 					}
 				}
